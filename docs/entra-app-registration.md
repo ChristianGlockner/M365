@@ -1,7 +1,9 @@
 # Entra App Registration checklist
 
 Live Microsoft login and **in-app Mandant registration** need these values.  
-Without them the portal still runs: use **Demo login** + **Simulate tenant connect**.
+`AUTH_SECRET` is always required (no hardcoded fallback).
+
+Without Entra credentials you may enable **DEV-only** demo: `ALLOW_DEMO_AUTH=true` and `ALLOW_DEMO_TENANT_CONNECT=true`. When Entra client id/secret are set, demo login and mock tenant connect are always off.
 
 ## 1. Create the app
 

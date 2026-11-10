@@ -28,8 +28,10 @@ pnpm dev
 
 ### In-app Mandant registration
 
-1. **Demo (no Entra):** click **Demo login** → **Tenants** → **Simulate tenant connect**.  
-2. **Real Entra:** set `AUTH_MICROSOFT_ENTRA_ID_ID` / `_SECRET`, register redirect URIs (sign-in **and** `/api/tenants/consent/callback`), then **Sign in with Microsoft** → **Connect tenant** (admin consent).  
+`AUTH_SECRET` is **required** (no code fallback). Generate with `openssl rand -base64 32`.
+
+1. **Demo (DEV only, no Entra):** set `ALLOW_DEMO_AUTH=true` and `ALLOW_DEMO_TENANT_CONNECT=true`, then **Demo login** → **Tenants** → **Simulate tenant connect**. Each demo sign-in gets its own user/org.  
+2. **Real Entra:** set `AUTH_MICROSOFT_ENTRA_ID_ID` / `_SECRET` (demo/mock paths are then **disabled**), register redirect URIs (sign-in **and** `/api/tenants/consent/callback`), then **Sign in with Microsoft** → **Connect tenant** (admin consent).  
 3. Connected tenants appear with status; **Disconnect** soft-revokes the link for that org only.
 
 Details: [docs/entra-app-registration.md](./docs/entra-app-registration.md).

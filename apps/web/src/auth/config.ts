@@ -2,24 +2,29 @@ import NextAuth from "next-auth";
 import MicrosoftEntraID from "next-auth/providers/microsoft-entra-id";
 import Credentials from "next-auth/providers/credentials";
 import type { Provider } from "next-auth/providers";
+import { randomUUID } from "crypto";
 import { loginScopes } from "@m365/platform/auth/scopes";
+import { requireAuthSecret } from "@/auth/secret";
 
 /**
- * Entra multi-tenant Mandant SSO + demo credentials for local/preview.
+ * Entra multi-tenant Mandant SSO + optional DEV-only demo credentials.
  *
- * Required for live Entra (see docs/entra-app-registration.md):
- * - AUTH_SECRET
- * - AUTH_MICROSOFT_ENTRA_ID_ID
- * - AUTH_MICROSOFT_ENTRA_ID_SECRET
- * - AUTH_MICROSOFT_ENTRA_ID_ISSUER (common/v2.0 for multi-tenant)
+ * Required:
+ * - AUTH_SECRET (no code fallback)
+ *
+ * Live Entra (see docs/entra-app-registration.md):
+ * - AUTH_MICROSOFT_ENTRA_ID_ID / _SECRET / _ISSUER
+ *
+ * Demo login (DEV only): ALLOW_DEMO_AUTH=true and Entra must NOT be configured.
+ * When Entra credentials are present, demo auth is always disabled.
  */
 const entraConfigured =
-  Boolean(process.env.AUTH_MICROSOFT_ENTRA_ID_ID) &&
-  Boolean(process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET);
+  Boolean(process.env.AUTH_MICROSOFT_ENTRA_ID_ID?.trim()) &&
+  Boolean(process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET?.trim());
 
+/** Explicit opt-in; never on when Entra is configured. */
 const allowDemoAuth =
-  process.env.ALLOW_DEMO_AUTH !== "false" &&
-  (!entraConfigured || process.env.ALLOW_DEMO_AUTH === "true");
+  !entraConfigured && process.env.ALLOW_DEMO_AUTH === "true";
 
 const providers: Provider[] = [];
 
@@ -52,10 +57,12 @@ if (allowDemoAuth) {
       async authorize(credentials) {
         const name =
           (credentials?.name as string | undefined)?.trim() || "Demo Analyst";
+        // Unique principal per demo sign-in → own org (isolation).
+        const id = randomUUID();
         return {
-          id: "demo-user",
+          id,
           name,
-          email: "analyst@demo.local",
+          email: `analyst-${id}@demo.local`,
         };
       },
     }),
@@ -92,9 +99,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
   trustHost: true,
-  secret:
-    process.env.AUTH_SECRET ??
-    "local-dev-only-change-me-before-production-use",
+  secret: requireAuthSecret(),
 });
 
 export const isEntraConfigured = entraConfigured;

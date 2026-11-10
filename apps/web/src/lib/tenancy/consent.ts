@@ -1,23 +1,24 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import { tenantConsentScopes } from "@m365/platform/auth/scopes";
+import { requireAuthSecret } from "@/auth/secret";
 
 export function isEntraConfigured(): boolean {
   return (
-    Boolean(process.env.AUTH_MICROSOFT_ENTRA_ID_ID) &&
-    Boolean(process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET)
+    Boolean(process.env.AUTH_MICROSOFT_ENTRA_ID_ID?.trim()) &&
+    Boolean(process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET?.trim())
   );
 }
 
+/**
+ * Mock tenant connect: explicit DEV opt-in only, and never when Entra is configured.
+ */
 export function isDemoTenantConnectAllowed(): boolean {
-  if (!isEntraConfigured()) return true;
-  return process.env.ALLOW_DEMO_TENANT_CONNECT !== "false";
+  if (isEntraConfigured()) return false;
+  return process.env.ALLOW_DEMO_TENANT_CONNECT === "true";
 }
 
 function stateSecret(): string {
-  return (
-    process.env.AUTH_SECRET ??
-    "local-dev-only-change-me-before-production-use"
-  );
+  return requireAuthSecret();
 }
 
 export interface ConsentStatePayload {
