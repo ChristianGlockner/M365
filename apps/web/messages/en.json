@@ -1,0 +1,57 @@
+{
+  "platform": {
+    "productName": "M365 Reporting Portal",
+    "tagline": "Assessment and interactive reports for Microsoft 365 tenants.",
+    "nav": {
+      "home": "Home",
+      "modules": "Modules",
+      "settings": "Settings"
+    },
+    "auth": {
+      "signIn": "Sign in with Microsoft",
+      "signOut": "Sign out",
+      "signedInAs": "Signed in as {name}",
+      "stubNotice": "Entra SSO is scaffolded. Configure App Registration credentials in .env to enable live login.",
+      "devBypass": "Continue without Entra (local shell)"
+    },
+    "tenant": {
+      "switcherLabel": "Tenant",
+      "placeholder": "No tenant connected",
+      "connectHint": "Connect a Mandant after Entra consent is configured."
+    },
+    "language": {
+      "label": "Language",
+      "de": "Deutsch",
+      "en": "English"
+    },
+    "home": {
+      "title": "Platform shell",
+      "body": "Phase 0/1 foundation: tenancy, SSO scaffolding, i18n, theming, and the Conditional Access module stub.",
+      "modulesHeading": "Registered modules",
+      "openModule": "Open"
+    },
+    "footer": {
+      "localFirst": "Local-first development · Azure Container Apps target"
+    }
+  },
+  "module": {
+    "ca": {
+      "name": "Conditional Access",
+      "nav": {
+        "overview": "Conditional Access"
+      },
+      "routes": {
+        "overview": "Conditional Access overview"
+      },
+      "export": {
+        "summary": "Conditional Access summary"
+      },
+      "stub": {
+        "title": "Conditional Access",
+        "body": "Inventory and assessment land in the next iteration. This page confirms the module plugin is registered.",
+        "scopesRead": "Read scopes (assessment)",
+        "scopesWrite": "Write scopes (reserved — not requested yet)"
+      }
+    }
+  }
+}

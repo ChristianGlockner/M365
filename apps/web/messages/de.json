@@ -1,0 +1,57 @@
+{
+  "platform": {
+    "productName": "M365 Reporting Portal",
+    "tagline": "Assessment und interaktive Reports für Microsoft-365-Mandanten.",
+    "nav": {
+      "home": "Start",
+      "modules": "Module",
+      "settings": "Einstellungen"
+    },
+    "auth": {
+      "signIn": "Mit Microsoft anmelden",
+      "signOut": "Abmelden",
+      "signedInAs": "Angemeldet als {name}",
+      "stubNotice": "Entra-SSO ist vorbereitet. App-Registration-Credentials in .env setzen, um Live-Login zu aktivieren.",
+      "devBypass": "Ohne Entra fortfahren (lokale Shell)"
+    },
+    "tenant": {
+      "switcherLabel": "Mandant",
+      "placeholder": "Kein Mandant verbunden",
+      "connectHint": "Mandant verbinden, sobald Entra-Consent konfiguriert ist."
+    },
+    "language": {
+      "label": "Sprache",
+      "de": "Deutsch",
+      "en": "English"
+    },
+    "home": {
+      "title": "Plattform-Shell",
+      "body": "Phase-0/1-Grundlage: Tenancy, SSO-Scaffolding, i18n, Theming und Conditional-Access-Modul-Stub.",
+      "modulesHeading": "Registrierte Module",
+      "openModule": "Öffnen"
+    },
+    "footer": {
+      "localFirst": "Lokal zuerst · Ziel: Azure Container Apps"
+    }
+  },
+  "module": {
+    "ca": {
+      "name": "Conditional Access",
+      "nav": {
+        "overview": "Conditional Access"
+      },
+      "routes": {
+        "overview": "Conditional Access Übersicht"
+      },
+      "export": {
+        "summary": "Conditional Access Zusammenfassung"
+      },
+      "stub": {
+        "title": "Conditional Access",
+        "body": "Inventar und Assessment folgen in der nächsten Iteration. Diese Seite bestätigt, dass das Modul-Plugin registriert ist.",
+        "scopesRead": "Read-Scopes (Assessment)",
+        "scopesWrite": "Write-Scopes (reserviert — noch nicht angefordert)"
+      }
+    }
+  }
+}

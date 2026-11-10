@@ -1,0 +1,27 @@
+# dependencies
+node_modules
+.pnpm-store
+
+# builds
+.next
+dist
+.turbo
+out
+
+# env / secrets
+.env
+.env.local
+.env.*.local
+
+# OS / IDE
+.DS_Store
+*.log
+.idea
+.vscode
+
+# drizzle
+drizzle/meta
+
+# misc
+coverage
+*.tsbuildinfo
