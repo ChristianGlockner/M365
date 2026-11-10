@@ -5,19 +5,65 @@
     "nav": {
       "home": "Start",
       "modules": "Module",
+      "tenants": "Mandanten",
       "settings": "Einstellungen"
     },
     "auth": {
       "signIn": "Mit Microsoft anmelden",
       "signOut": "Abmelden",
       "signedInAs": "Angemeldet als {name}",
-      "stubNotice": "Entra-SSO ist vorbereitet. App-Registration-Credentials in .env setzen, um Live-Login zu aktivieren.",
-      "devBypass": "Ohne Entra fortfahren (lokale Shell)"
+      "stubNotice": "Für Live-Microsoft-Login App-Registration-Credentials in .env setzen.",
+      "devBypass": "Demo-Login (ohne Entra)"
     },
     "tenant": {
       "switcherLabel": "Mandant",
       "placeholder": "Kein Mandant verbunden",
-      "connectHint": "Mandant verbinden, sobald Entra-Consent konfiguriert ist."
+      "connectHint": "Mandant auf der Mandanten-Seite verbinden.",
+      "manage": "Verwalten"
+    },
+    "tenants": {
+      "eyebrow": "Mandanten-Registrierung",
+      "title": "Mandanten verbinden",
+      "body": "Registrieren Sie einen Microsoft-365-Mandanten für diese Organisation per Admin-Consent. Jeder Mandant sieht und bewertet nur die eigenen Daten.",
+      "orgContext": "Organisation: {org}. {isolation}",
+      "isolationNote": "TenantLinks sind über organizationId isoliert.",
+      "listTitle": "Verbundene Mandanten",
+      "emptyTitle": "Noch kein Mandant verbunden",
+      "emptyBody": "Nutzen Sie Microsoft-Admin-Consent, wenn Entra konfiguriert ist — oder den klar gekennzeichneten Demo-Pfad, um einen Mandanten für die UI-Vorschau zu simulieren.",
+      "connectRealTitle": "Mit Microsoft verbinden",
+      "connectRealBody": "Startet Entra-Admin-Consent für die Multi-Tenant-App (Assessment-first Graph-Read-Scopes). Beim Rücksprung erstellen oder aktualisieren wir den TenantLink Ihrer Organisation.",
+      "connectRealCta": "Mandant verbinden",
+      "connectRealDisabled": "AUTH_MICROSOFT_ENTRA_ID_ID und AUTH_MICROSOFT_ENTRA_ID_SECRET setzen und Redirect-URI /api/tenants/consent/callback registrieren, um echten Consent auf diesem Host zu aktivieren.",
+      "connectDemoTitle": "Mandant-Verbindung simulieren",
+      "connectDemoBody": "Nur Demo — kein Microsoft-Aufruf. Erstellt einen Mock-TenantLink für diese Organisation, damit Sie die UI durchspielen können.",
+      "connectDemoCta": "Mandant-Verbindung simulieren",
+      "demoNameLabel": "Demo-Anzeigename",
+      "disconnect": "Trennen",
+      "badgeDemo": "Demo",
+      "scopesTitle": "Consent-Scopes (Assessment-first)",
+      "scopesBody": "Echter Admin-Consent erteilt die Graph-Berechtigungen der App Registration. Dieses Portal nutzt Read-Scopes für Conditional-Access-Inventar — keine Write/Deploy-Scopes.",
+      "scopesWriteReserved": "Reserviert (nicht angefordert): Policy.ReadWrite.ConditionalAccess",
+      "status": {
+        "pending": "Ausstehend",
+        "granted": "Verbunden",
+        "revoked": "Getrennt",
+        "error": "Fehler"
+      },
+      "flash": {
+        "connected": "Mandant verbunden.",
+        "updated": "TenantLink aktualisiert.",
+        "already_connected": "Dieser Mandant war für Ihre Organisation bereits verbunden.",
+        "disconnected": "Mandant getrennt (soft)."
+      },
+      "errors": {
+        "consent_denied": "Admin-Consent wurde verweigert oder ist fehlgeschlagen.",
+        "consent_incomplete": "Consent-Callback unvollständig (Mandant oder admin_consent fehlt).",
+        "invalid_state": "Consent-State ungültig oder abgelaufen. Bitte erneut über „Mandant verbinden“ starten.",
+        "entra_not_configured": "Entra-Credentials sind auf diesem Host nicht konfiguriert.",
+        "mock_failed": "Demo-Verbindung fehlgeschlagen.",
+        "disconnect_failed": "Trennen fehlgeschlagen.",
+        "auth": "Bitte zuerst anmelden."
+      }
     },
     "language": {
       "label": "Sprache",
@@ -26,9 +72,10 @@
     },
     "home": {
       "title": "Plattform-Shell",
-      "body": "Phase-0/1-Grundlage: Tenancy, SSO-Scaffolding, i18n, Theming und Conditional-Access-Modul-Stub.",
+      "body": "Phase-0/1-Grundlage: Tenancy, Mandanten-Registrierung, i18n, Theming und Conditional-Access-Modul-Stub.",
       "modulesHeading": "Registrierte Module",
-      "openModule": "Öffnen"
+      "openModule": "Öffnen",
+      "tenantsCta": "Mandanten registrieren"
     },
     "footer": {
       "localFirst": "Lokal zuerst · Ziel: Azure Container Apps"

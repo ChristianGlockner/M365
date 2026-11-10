@@ -1,21 +1,25 @@
 import NextAuth from "next-auth";
 import MicrosoftEntraID from "next-auth/providers/microsoft-entra-id";
+import Credentials from "next-auth/providers/credentials";
 import type { Provider } from "next-auth/providers";
 import { loginScopes } from "@m365/platform/auth/scopes";
 
 /**
- * Entra multi-tenant Mandant SSO scaffolding.
- * Session is intended to bind to an Organization after first login / invite flow.
+ * Entra multi-tenant Mandant SSO + demo credentials for local/preview.
  *
- * Required env (see .env.example + docs/entra-app-registration.md):
+ * Required for live Entra (see docs/entra-app-registration.md):
  * - AUTH_SECRET
- * - AUTH_MICROSOFT_ENTRA_ID_ID (Application/Client ID)
+ * - AUTH_MICROSOFT_ENTRA_ID_ID
  * - AUTH_MICROSOFT_ENTRA_ID_SECRET
- * - AUTH_MICROSOFT_ENTRA_ID_ISSUER (https://login.microsoftonline.com/common/v2.0 for multi-tenant)
+ * - AUTH_MICROSOFT_ENTRA_ID_ISSUER (common/v2.0 for multi-tenant)
  */
 const entraConfigured =
   Boolean(process.env.AUTH_MICROSOFT_ENTRA_ID_ID) &&
   Boolean(process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET);
+
+const allowDemoAuth =
+  process.env.ALLOW_DEMO_AUTH !== "false" &&
+  (!entraConfigured || process.env.ALLOW_DEMO_AUTH === "true");
 
 const providers: Provider[] = [];
 
@@ -37,16 +41,41 @@ if (entraConfigured) {
   );
 }
 
+if (allowDemoAuth) {
+  providers.push(
+    Credentials({
+      id: "demo",
+      name: "Demo",
+      credentials: {
+        name: { label: "Name", type: "text" },
+      },
+      async authorize(credentials) {
+        const name =
+          (credentials?.name as string | undefined)?.trim() || "Demo Analyst";
+        return {
+          id: "demo-user",
+          name,
+          email: "analyst@demo.local",
+        };
+      },
+    }),
+  );
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers,
   callbacks: {
-    async jwt({ token, account, profile }) {
+    async jwt({ token, account, profile, user }) {
+      if (account?.provider === "demo" && user) {
+        token.entraOid = `demo-${user.id}`;
+        token.organizationId = null;
+        return token;
+      }
       if (account) {
         token.accessToken = account.access_token;
         token.entraOid =
           (profile as { oid?: string } | undefined)?.oid ?? token.sub;
       }
-      // organizationId is attached after membership resolution (later PR).
       if (token.organizationId === undefined) {
         token.organizationId = null;
       }
@@ -63,10 +92,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
   trustHost: true,
-  // Allow local shell without Entra; generate a stable dev secret if unset.
   secret:
     process.env.AUTH_SECRET ??
     "local-dev-only-change-me-before-production-use",
 });
 
 export const isEntraConfigured = entraConfigured;
+export const isDemoAuthEnabled = allowDemoAuth;

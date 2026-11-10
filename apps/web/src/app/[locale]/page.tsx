@@ -1,7 +1,8 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getRegisteredModules } from "@m365/platform";
-import { isEntraConfigured } from "@/auth/config";
+import { isDemoAuthEnabled, isEntraConfigured } from "@/auth/config";
+import { resolveAppSession } from "@/lib/tenancy/app-session";
 
 export default async function HomePage({
   params,
@@ -13,6 +14,7 @@ export default async function HomePage({
   const t = await getTranslations("platform");
   const tCa = await getTranslations("module.ca");
   const modules = getRegisteredModules();
+  const session = await resolveAppSession().catch(() => null);
 
   return (
     <div className="space-y-10">
@@ -27,11 +29,25 @@ export default async function HomePage({
           {t("home.body")}
         </p>
         <p className="max-w-2xl text-[var(--color-muted)]">{t("tagline")}</p>
-        {!isEntraConfigured ? (
+        {!isEntraConfigured && isDemoAuthEnabled ? (
           <p className="shell-panel max-w-2xl rounded px-4 py-3 text-sm text-[var(--color-muted)]">
-            {t("auth.stubNotice")}
+            {t("auth.stubNotice")} {t("auth.devBypass")} → {t("home.tenantsCta")}.
           </p>
         ) : null}
+        <div className="flex flex-wrap gap-3 pt-2">
+          {session ? (
+            <Link
+              href="/tenants"
+              className="inline-flex rounded bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-[var(--color-on-primary)] hover:opacity-90"
+            >
+              {t("home.tenantsCta")}
+            </Link>
+          ) : (
+            <p className="text-sm text-[var(--color-muted)]">
+              {t("tenants.errors.auth")}
+            </p>
+          )}
+        </div>
       </section>
 
       <section className="space-y-4">

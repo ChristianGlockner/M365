@@ -1,7 +1,7 @@
 # M365 Reporting Portal
 
 Assessment + interactive reporting platform for Microsoft 365 tenants.  
-First module: **Conditional Access** (stub in this PR — inventory/analyzers next).
+First module: **Conditional Access** (stub — inventory/analyzers next).
 
 ## Stack
 
@@ -10,49 +10,29 @@ First module: **Conditional Access** (stub in this PR — inventory/analyzers ne
 | Monorepo | pnpm + Turborepo |
 | App | Next.js App Router (`apps/web`) |
 | Packages | `@m365/platform`, `@m365/module-sdk`, `@m365/module-ca` |
-| DB | PostgreSQL + Drizzle ORM |
-| Auth | Auth.js (NextAuth) + Microsoft Entra ID (multi-tenant) |
+| DB | PostgreSQL + Drizzle ORM (schema ready); **file store** `.data/tenancy.json` for tenant UI without Docker |
+| Auth | Auth.js + Microsoft Entra ID (multi-tenant) + Demo login |
 | i18n | next-intl (`de` + `en`) |
 | Local infra | Docker Compose (Postgres; Redis optional) |
-
-## Repository layout
-
-```
-apps/web/                 # Next.js UI + auth route handlers
-packages/platform/        # Schema, auth scopes, theme, module registry, i18n helpers
-packages/module-sdk/      # PlatformModule contract
-packages/module-ca/       # Conditional Access module stub
-docs/                     # Entra checklist + Azure-ready notes
-docker-compose.yml        # Local Postgres
-```
-
-## Prerequisites
-
-- Node.js 22+
-- pnpm 10+ (`corepack enable` recommended)
-- Docker + Docker Compose (for Postgres)
-
-> Cloud agent note: if Docker is unavailable in the environment, the web shell still **builds** without a live DB. Start Postgres on your machine before migrations / persistence work.
 
 ## Quick start
 
 ```bash
-# 1) Install
 pnpm install
-
-# 2) Environment
-cp .env.example .env
-# Set AUTH_SECRET (openssl rand -base64 32). Entra vars optional for shell-only.
-
-# 3) Database
-docker compose up -d
-pnpm db:generate   # generate SQL from Drizzle schema when iterating
-pnpm db:migrate    # apply migrations (requires Postgres)
-
-# 4) Dev server
+cp .env.example .env   # set AUTH_SECRET; Entra optional for demo
+# Optional Postgres:
+docker compose up -d && pnpm db:migrate
 pnpm dev
-# → http://localhost:3000  (redirects to /de or /en)
+# → http://localhost:3000
 ```
+
+### In-app Mandant registration
+
+1. **Demo (no Entra):** click **Demo login** → **Tenants** → **Simulate tenant connect**.  
+2. **Real Entra:** set `AUTH_MICROSOFT_ENTRA_ID_ID` / `_SECRET`, register redirect URIs (sign-in **and** `/api/tenants/consent/callback`), then **Sign in with Microsoft** → **Connect tenant** (admin consent).  
+3. Connected tenants appear with status; **Disconnect** soft-revokes the link for that org only.
+
+Details: [docs/entra-app-registration.md](./docs/entra-app-registration.md).
 
 ### Useful scripts
 
@@ -61,41 +41,38 @@ pnpm dev
 | `pnpm dev` | Next.js dev server |
 | `pnpm build` | Build all packages / app |
 | `pnpm typecheck` | TypeScript across workspace |
-| `pnpm db:studio` | Drizzle Studio |
+| `pnpm db:migrate` | Apply Drizzle migrations (Postgres) |
 
-## What works in this skeleton
+## Repository layout
 
-- Monorepo + package boundaries
-- Org / membership / TenantLink / branding / run / snapshot / finding **schema**
-- Entra multi-tenant auth **scaffolding** (live login after App Registration)
-- DE + EN shell strings + language switcher
-- CSS-variable theming with org branding placeholders
-- `module-ca` registered; stub page under `/[locale]/m/ca`
-- Tenant switcher placeholder (no live TenantLinks yet)
+```
+apps/web/                 # Next.js UI + auth + tenant registration
+packages/platform/        # Schema, auth scopes, theme, module registry
+packages/module-sdk/      # PlatformModule contract
+packages/module-ca/       # Conditional Access module stub
+docs/                     # Entra checklist + Azure-ready notes
+docker-compose.yml        # Local Postgres
+```
 
-## What is intentionally not here
+## What works now
 
-- Graph CA inventory / collectors / analyzers
-- Assessment run engine + interactive report
-- Write/deploy UI (scopes reserved only — see docs)
+- Monorepo + package boundaries  
+- Org / membership / TenantLink persistence (file store for preview; Drizzle schema for Postgres)  
+- In-app Mandant connect: real admin consent **or** labeled demo simulate  
+- Soft disconnect, empty/error/already-connected UX (DE+EN)  
+- Theme + language switcher + CA module stub  
 
-## Entra configuration (Christian)
+## Out of scope (next)
 
-See **[docs/entra-app-registration.md](./docs/entra-app-registration.md)** for the full checklist.
-
-Minimum you must configure:
-
-1. Multi-tenant App Registration  
-2. Redirect URI → `/api/auth/callback/microsoft-entra-id`  
-3. Client ID + secret in `.env`  
-4. Delegated **read** Graph scopes for CA (+ admin consent in the Dev Tenant)  
-5. Leave **write** scopes (`Policy.ReadWrite.ConditionalAccess`) out until remediation ships  
+- Graph CA inventory / collectors / analyzers  
+- Assessment run engine + interactive report  
+- Write/deploy UI (scopes reserved only)
 
 ## Azure later
 
-See **[docs/azure-ready.md](./docs/azure-ready.md)**. No Azure deploy is required for Phase 0/1 local foundation.
+See [docs/azure-ready.md](./docs/azure-ready.md).
 
-## Isolation rules (non-negotiable)
+## Isolation rules
 
 1. Session → Organization  
 2. Graph + reports → one `TenantLink`  

@@ -5,7 +5,9 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import { brandingToCssVars, DEFAULT_BRANDING } from "@m365/platform";
 import { routing } from "@/i18n/routing";
 import { AppHeader } from "@/components/AppHeader";
-import { auth, isEntraConfigured } from "@/auth/config";
+import { auth, isDemoAuthEnabled, isEntraConfigured } from "@/auth/config";
+import { resolveAppSession } from "@/lib/tenancy/app-session";
+import { listTenantLinksForOrg } from "@/lib/tenancy/store";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -30,12 +32,31 @@ export default async function LocaleLayout({
 
   let signedIn = false;
   let displayName: string | null = null;
+  let tenants: {
+    id: string;
+    displayName: string;
+    consentStatus: string;
+    source: "entra" | "mock";
+  }[] = [];
+
   try {
     const session = await auth();
     signedIn = Boolean(session?.user);
     displayName = session?.user?.name ?? session?.user?.email ?? null;
+    if (signedIn) {
+      const app = await resolveAppSession();
+      if (app) {
+        displayName = app.displayName;
+        const links = await listTenantLinksForOrg(app.organizationId);
+        tenants = links.map((l) => ({
+          id: l.id,
+          displayName: l.displayName,
+          consentStatus: l.consentStatus,
+          source: l.source,
+        }));
+      }
+    }
   } catch {
-    // AUTH_SECRET missing in bare local shell — treat as signed out
     signedIn = false;
   }
 
@@ -60,6 +81,8 @@ export default async function LocaleLayout({
               signedIn={signedIn}
               displayName={displayName}
               entraConfigured={isEntraConfigured}
+              demoAuthEnabled={isDemoAuthEnabled}
+              tenants={tenants}
             />
             <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 md:px-6">
               {children}

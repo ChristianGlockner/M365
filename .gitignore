@@ -22,6 +22,9 @@ out
 # drizzle
 drizzle/meta
 
+# local tenancy file store (preview / no-Docker fallback)
+.data
+
 # misc
 coverage
 *.tsbuildinfo

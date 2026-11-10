@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { TenantSwitcher } from "./TenantSwitcher";
+import { TenantSwitcher, type TenantOption } from "./TenantSwitcher";
 import { AuthControls } from "./AuthControls";
 import { getRegisteredModules } from "@m365/platform";
 
@@ -9,10 +9,14 @@ export async function AppHeader({
   signedIn,
   displayName,
   entraConfigured,
+  demoAuthEnabled,
+  tenants,
 }: {
   signedIn: boolean;
   displayName?: string | null;
   entraConfigured: boolean;
+  demoAuthEnabled: boolean;
+  tenants: TenantOption[];
 }) {
   const t = await getTranslations("platform");
   const tCa = await getTranslations("module.ca");
@@ -40,6 +44,12 @@ export async function AppHeader({
             >
               {t("nav.home")}
             </Link>
+            <Link
+              href="/tenants"
+              className="text-[var(--color-muted)] hover:text-[var(--color-primary)]"
+            >
+              {t("nav.tenants")}
+            </Link>
             {modules.map((m) => (
               <Link
                 key={m.id}
@@ -52,12 +62,13 @@ export async function AppHeader({
           </nav>
         </div>
         <div className="flex flex-wrap items-center gap-4">
-          <TenantSwitcher />
+          <TenantSwitcher tenants={tenants} signedIn={signedIn} />
           <LanguageSwitcher />
           <AuthControls
             signedIn={signedIn}
             displayName={displayName}
             entraConfigured={entraConfigured}
+            demoAuthEnabled={demoAuthEnabled}
           />
         </div>
       </div>
