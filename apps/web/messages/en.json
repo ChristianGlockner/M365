@@ -1,0 +1,104 @@
+{
+  "platform": {
+    "productName": "M365 Reporting Portal",
+    "tagline": "Assessment and interactive reports for Microsoft 365 tenants.",
+    "nav": {
+      "home": "Home",
+      "modules": "Modules",
+      "tenants": "Tenants",
+      "settings": "Settings"
+    },
+    "auth": {
+      "signIn": "Sign in with Microsoft",
+      "signOut": "Sign out",
+      "signedInAs": "Signed in as {name}",
+      "stubNotice": "Entra SSO needs App Registration credentials in .env for live Microsoft login.",
+      "devBypass": "Demo login (no Entra)"
+    },
+    "tenant": {
+      "switcherLabel": "Tenant",
+      "placeholder": "No tenant connected",
+      "connectHint": "Connect a Mandant on the Tenants page.",
+      "manage": "Manage"
+    },
+    "tenants": {
+      "eyebrow": "Mandant registration",
+      "title": "Connect tenants",
+      "body": "Register a Microsoft 365 Mandant for this organization via admin consent. Each tenant only sees and evaluates its own data.",
+      "orgContext": "Organization: {org}. {isolation}",
+      "isolationNote": "TenantLinks are isolated by organizationId.",
+      "listTitle": "Connected tenants",
+      "emptyTitle": "No Mandant connected yet",
+      "emptyBody": "Use Microsoft admin consent when Entra is configured, or the clearly labeled demo path to simulate a tenant for UI preview.",
+      "connectRealTitle": "Connect with Microsoft",
+      "connectRealBody": "Starts Entra admin consent for the multi-tenant app (assessment-first Graph read scopes). On return we create or update the TenantLink for your organization.",
+      "connectRealCta": "Connect tenant",
+      "connectRealDisabled": "Set AUTH_MICROSOFT_ENTRA_ID_ID and AUTH_MICROSOFT_ENTRA_ID_SECRET, and register redirect URI /api/tenants/consent/callback, to enable real consent on this host.",
+      "connectDemoTitle": "Simulate tenant connect",
+      "connectDemoBody": "Demo only — no Microsoft call. Creates a mock TenantLink for this organization so you can exercise the UI.",
+      "connectDemoCta": "Simulate tenant connect",
+      "demoNameLabel": "Demo display name",
+      "disconnect": "Disconnect",
+      "badgeDemo": "Demo",
+      "scopesTitle": "Consent scopes (assessment-first)",
+      "scopesBody": "Real admin consent grants the Graph permissions configured on the App Registration. This portal requests read scopes for Conditional Access inventory — not write/deploy.",
+      "scopesWriteReserved": "Reserved (not requested): Policy.ReadWrite.ConditionalAccess",
+      "status": {
+        "pending": "Pending",
+        "granted": "Connected",
+        "revoked": "Disconnected",
+        "error": "Error"
+      },
+      "flash": {
+        "connected": "Tenant connected.",
+        "updated": "Tenant link updated.",
+        "already_connected": "This Mandant was already connected for your organization.",
+        "disconnected": "Tenant disconnected (soft)."
+      },
+      "errors": {
+        "consent_denied": "Admin consent was denied or failed.",
+        "consent_incomplete": "Consent callback was incomplete (missing tenant or admin_consent).",
+        "invalid_state": "Consent state was invalid or expired. Start again from Connect tenant.",
+        "entra_not_configured": "Entra credentials are not configured on this host.",
+        "mock_failed": "Demo connect failed.",
+        "disconnect_failed": "Disconnect failed.",
+        "auth": "Please sign in first."
+      }
+    },
+    "language": {
+      "label": "Language",
+      "de": "Deutsch",
+      "en": "English"
+    },
+    "home": {
+      "title": "Platform shell",
+      "body": "Phase 0/1 foundation: tenancy, Mandant registration, i18n, theming, and the Conditional Access module stub.",
+      "modulesHeading": "Registered modules",
+      "openModule": "Open",
+      "tenantsCta": "Register tenants"
+    },
+    "footer": {
+      "localFirst": "Local-first development · Azure Container Apps target"
+    }
+  },
+  "module": {
+    "ca": {
+      "name": "Conditional Access",
+      "nav": {
+        "overview": "Conditional Access"
+      },
+      "routes": {
+        "overview": "Conditional Access overview"
+      },
+      "export": {
+        "summary": "Conditional Access summary"
+      },
+      "stub": {
+        "title": "Conditional Access",
+        "body": "Inventory and assessment land in the next iteration. This page confirms the module plugin is registered.",
+        "scopesRead": "Read scopes (assessment)",
+        "scopesWrite": "Write scopes (reserved — not requested yet)"
+      }
+    }
+  }
+}

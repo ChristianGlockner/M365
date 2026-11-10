@@ -1,0 +1,26 @@
+{
+  "name": "m365-reporting",
+  "private": true,
+  "packageManager": "pnpm@10.33.4",
+  "scripts": {
+    "dev": "turbo run dev --filter=@m365/web",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "db:generate": "pnpm --filter @m365/platform db:generate",
+    "db:migrate": "pnpm --filter @m365/platform db:migrate",
+    "db:studio": "pnpm --filter @m365/platform db:studio"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.4",
+    "typescript": "^5.8.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "@swc/core",
+      "@parcel/watcher",
+      "sharp"
+    ]
+  }
+}
